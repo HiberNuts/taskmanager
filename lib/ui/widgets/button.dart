@@ -13,10 +13,10 @@ class MyButton extends StatelessWidget {
       onTap: onTap,
       child: Container(
         alignment: Alignment.center,
-        width: 90,
+        width: 120,
         height: 50,
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20), color: primaryClr),
+            borderRadius: BorderRadius.circular(15), color: primaryClr),
         child: Text(
           label,
           style: const TextStyle(color: Colors.white),
