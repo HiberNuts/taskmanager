@@ -1,9 +1,11 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:flutter_native_timezone/flutter_native_timezone.dart';
+
 import 'package:timezone/data/latest.dart' as tz;
-import 'package:timezone/standalone.dart' as tz;
+
 import 'package:timezone/timezone.dart' as tz;
 
 class NotifyHelper {
@@ -19,7 +21,7 @@ class NotifyHelper {
             requestAlertPermission: false,
             onDidReceiveLocalNotification: onDidReceiveLocalNotification);
 
-    final AndroidInitializationSettings initializationSettingsAndroid =
+    const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings("appicon");
 
     final InitializationSettings initializationSettings =
@@ -67,7 +69,7 @@ class NotifyHelper {
     //     ],
     //   ),
     // );
-    Get.dialog(Text("Welcome to notification"));
+    Get.dialog(const Text("Welcome to notification"));
   }
 
   void requestIOSPermissions() {

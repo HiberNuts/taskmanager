@@ -2,6 +2,9 @@ import "package:flutter/material.dart";
 import 'package:get/get.dart';
 import 'package:taskmanager/services/notification_services.dart';
 import 'package:taskmanager/services/theme_services.dart';
+import "package:intl/intl.dart";
+import 'package:taskmanager/ui/theme.dart';
+import 'package:taskmanager/ui/widgets/button.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -27,11 +30,30 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: _appBar(),
       body: Column(
-        children: const [
-          Text(
-            "Theme Data",
-            style: TextStyle(fontSize: 30),
-          ),
+        children: [
+          Row(
+            children: [
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      DateFormat.yMMMMd().format(
+                        DateTime.now(),
+                      ),
+                      style: subHeadingStyle,
+                    ),
+                    Text(
+                      "Today",
+                      style: headingStyle,
+                    ),
+                  ],
+                ),
+              ),
+              MyButton(label: "+ Add Task", onTap: () => null)
+            ],
+          )
         ],
       ),
     );
@@ -39,8 +61,8 @@ class _HomePageState extends State<HomePage> {
 
   _appBar() {
     return AppBar(
-      
-      backgroundColor: context.theme.appBarTheme.color,
+      elevation: 0,
+      backgroundColor: Theme.of(context).primaryColor,
       leading: GestureDetector(
         onTap: () {
           ThemeService().switchTheme();
@@ -51,17 +73,19 @@ class _HomePageState extends State<HomePage> {
           );
           notifyHelper.scheduledNotification();
         },
-        child: const Icon(
-          Icons.nightlight_round,
+        child: Icon(
+          Get.isDarkMode ? Icons.wb_sunny_outlined : Icons.nightlight_round,
           size: 20,
+          color: Get.isDarkMode ? Colors.white : Colors.black,
         ),
       ),
-      actions: const [
+      actions: [
         Icon(
           Icons.person,
           size: 20,
+          color: Get.isDarkMode ? Colors.white : Colors.black,
         ),
-        SizedBox(
+        const SizedBox(
           width: 20,
         ),
       ],
