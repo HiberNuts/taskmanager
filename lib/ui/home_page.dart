@@ -39,6 +39,8 @@ class _HomePageState extends State<HomePage> {
 
   _appBar() {
     return AppBar(
+      
+      backgroundColor: context.theme.appBarTheme.color,
       leading: GestureDetector(
         onTap: () {
           ThemeService().switchTheme();
