@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:taskmanager/ui/theme.dart';
+import 'package:taskmanager/ui/widgets/button.dart';
 import 'package:taskmanager/ui/widgets/input_field.dart';
 
 class AddTaskPage extends StatefulWidget {
@@ -12,9 +13,32 @@ class AddTaskPage extends StatefulWidget {
 }
 
 class _AddTaskPageState extends State<AddTaskPage> {
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _noteController = TextEditingController();
   DateTime _selectedDate = DateTime.now();
   String _endTime = "9:30 PM";
   String _startTime = DateFormat("hh:mm a").format(DateTime.now()).toString();
+
+  int _selectedRemind = 5;
+  List<int> remindList = [
+    5,
+    10,
+    15,
+    20,
+    25,
+    30,
+  ];
+
+  String _selectedRepeat = "None";
+  List<String> repeatList = [
+    "None",
+    "Daily",
+    "Weekly",
+    "Monthly",
+  ];
+
+  int _selectedColor = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,13 +50,22 @@ class _AddTaskPageState extends State<AddTaskPage> {
         ),
         child: SingleChildScrollView(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 "Add Task",
                 style: headingStyle,
               ),
-              MyInputField(title: "Title", hint: "Enter title here"),
-              MyInputField(title: "Note", hint: "Enter Note here"),
+              MyInputField(
+                title: "Title",
+                hint: "Enter title here",
+                controller: _titleController,
+              ),
+              MyInputField(
+                title: "Note",
+                hint: "Enter Note here",
+                controller: _noteController,
+              ),
               MyInputField(
                 title: "Date",
                 hint: DateFormat.yMd().format(_selectedDate),
@@ -76,11 +109,142 @@ class _AddTaskPageState extends State<AddTaskPage> {
                     ),
                   )
                 ],
+              ),
+              MyInputField(
+                title: "Remind",
+                hint: "$_selectedRemind minutes early",
+                widget: DropdownButton(
+                  icon: const Icon(
+                    Icons.keyboard_arrow_down,
+                    color: Colors.grey,
+                  ),
+                  iconSize: 32,
+                  elevation: 4,
+                  style: subTitleStyle,
+                  underline: Container(height: 0),
+                  items: remindList.map<DropdownMenuItem<String>>(
+                    (int value) {
+                      return DropdownMenuItem<String>(
+                        value: value.toString(),
+                        child: Text(value.toString()),
+                      );
+                    },
+                  ).toList(),
+                  onChanged: (String? value) {
+                    setState(() {
+                      _selectedRemind = int.parse(value!);
+                    });
+                  },
+                ),
+              ),
+              MyInputField(
+                title: "Repeat",
+                hint: "$_selectedRepeat",
+                widget: DropdownButton(
+                  icon: const Icon(
+                    Icons.keyboard_arrow_down,
+                    color: Colors.grey,
+                  ),
+                  iconSize: 32,
+                  elevation: 4,
+                  style: subTitleStyle,
+                  underline: Container(height: 0),
+                  items: repeatList.map<DropdownMenuItem<String>>(
+                    (String? value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(
+                          value!,
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      );
+                    },
+                  ).toList(),
+                  onChanged: (String? value) {
+                    setState(() {
+                      _selectedRepeat = value!;
+                    });
+                  },
+                ),
+              ),
+              const SizedBox(
+                height: 3,
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _colorPallete(),
+                  MyButton(label: "Create Task", onTap: () => _validateDate())
+                ],
               )
             ],
           ),
         ),
       ),
+    );
+  }
+
+  _validateDate() {
+    if (_titleController.text.isNotEmpty && _noteController.text.isNotEmpty) {
+      //add to databse
+      Get.back();
+    } else if (_titleController.text.isEmpty || _noteController.text.isEmpty) {
+      Get.snackbar(
+        "Required",
+        "Leave no fields empty",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.white,
+        colorText: pink,
+        margin: const EdgeInsets.only(bottom: 10),
+        icon: const Icon(Icons.warning_amber_rounded),
+      );
+    }
+  }
+
+  _colorPallete() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Color",
+          style: titleStyle,
+        ),
+        const SizedBox(
+          height: 7,
+        ),
+        Wrap(
+          children: List<Widget>.generate(
+            3,
+            (index) {
+              return GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _selectedColor = index;
+                  });
+                },
+                child: Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: CircleAvatar(
+                      radius: 14,
+                      backgroundColor: index == 0
+                          ? primaryClr
+                          : index == 1
+                              ? pink
+                              : yellow,
+                      child: _selectedColor == index
+                          ? const Icon(
+                              Icons.done,
+                              color: Colors.white,
+                              size: 16,
+                            )
+                          : Container(),
+                    )),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 
@@ -125,15 +289,20 @@ class _AddTaskPageState extends State<AddTaskPage> {
     }
   }
 
-  _getTimeFromUser({required bool isStartTime}) {
-    var _pickedTime = _showTimePicker();
-    String _formatedTime = _pickedTime.format.of(context);
+  _getTimeFromUser({required bool isStartTime}) async {
+    var _pickedTime = await _showTimePicker();
+    var _formatedTime = _pickedTime?.format(context);
+
     if (_pickedTime == null) {
-      print("no TIme");
+      print("no Time");
     } else if (isStartTime == true) {
-      _startTime = _formatedTime;
+      setState(() {
+        _startTime = _formatedTime;
+      });
     } else if (isStartTime == false) {
-      _endTime = _formatedTime;
+      setState(() {
+        _endTime = _formatedTime;
+      });
     }
   }
 
@@ -141,7 +310,10 @@ class _AddTaskPageState extends State<AddTaskPage> {
     return showTimePicker(
       initialEntryMode: TimePickerEntryMode.input,
       context: context,
-      initialTime: TimeOfDay(hour: 9, minute: 10),
+      initialTime: TimeOfDay(
+        hour: int.parse(_startTime.split(":")[0]),
+        minute: int.parse(_startTime.split(":")[1].split(" ")[0]),
+      ),
     );
   }
 }
