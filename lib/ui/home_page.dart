@@ -1,13 +1,16 @@
 import 'package:date_picker_timeline/date_picker_widget.dart';
 import "package:flutter/material.dart";
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:taskmanager/controllers/task_controller.dart';
 import 'package:taskmanager/services/notification_services.dart';
 import 'package:taskmanager/services/theme_services.dart';
 import "package:intl/intl.dart";
 import 'package:taskmanager/ui/theme.dart';
 import 'package:taskmanager/ui/widgets/add_task_bar.dart';
 import 'package:taskmanager/ui/widgets/button.dart';
+import 'package:taskmanager/ui/widgets/task_tile.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -19,6 +22,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   var notifyHelper;
   DateTime _selectedDate = DateTime.now();
+  final _taskController = Get.put(TaskController());
 
   @override
   void initState() {
@@ -38,7 +42,41 @@ class _HomePageState extends State<HomePage> {
         children: [
           _addTaskBar(),
           _addDateBar(),
+          SizedBox(
+            height: 10,
+          ),
+          _showTasks(),
         ],
+      ),
+    );
+  }
+
+  _showTasks() {
+    _taskController.getTasks();
+    return Expanded(
+      child: Obx(
+        () {
+          return ListView.builder(
+            itemCount: _taskController.taskList.length,
+            itemBuilder: (_, index) {
+              return AnimationConfiguration.staggeredList(
+                position: index,
+                child: SlideAnimation(
+                  child: FadeInAnimation(
+                    child: Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () {},
+                          child: TaskTile(_taskController.taskList[index]),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          );
+        },
       ),
     );
   }
@@ -102,7 +140,11 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           MyButton(
-              label: "+ Add Task", onTap: () => Get.to(const AddTaskPage()))
+              label: "+ Add Task",
+              onTap: () async {
+                await Get.to(() => const AddTaskPage());
+                _taskController.getTasks();
+              })
         ],
       ),
     );
