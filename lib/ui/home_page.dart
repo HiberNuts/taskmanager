@@ -12,6 +12,8 @@ import 'package:taskmanager/ui/widgets/add_task_bar.dart';
 import 'package:taskmanager/ui/widgets/button.dart';
 import 'package:taskmanager/ui/widgets/task_tile.dart';
 
+import '../models/model.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -66,7 +68,10 @@ class _HomePageState extends State<HomePage> {
                     child: Row(
                       children: [
                         GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                            _showBottomSheet(
+                                context, _taskController.taskList[index]);
+                          },
                           child: TaskTile(_taskController.taskList[index]),
                         )
                       ],
@@ -77,6 +82,53 @@ class _HomePageState extends State<HomePage> {
             },
           );
         },
+      ),
+    );
+  }
+
+  _showBottomSheet(BuildContext context, Task task) {
+    Get.bottomSheet(
+      Container(
+        padding: const EdgeInsets.only(top: 4),
+        height: task.isCompleted == 1
+            ? MediaQuery.of(context).size.height * 0.24
+            : MediaQuery.of(context).size.height * 0.32,
+        color: Get.isDarkMode ? darkGreyClr : Colors.white,
+        child: Column(
+          children: [
+            Container(
+              height: 6,
+              width: 120,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Get.isDarkMode ? Colors.grey[600] : Colors.grey[300],
+              ),
+            ),
+            task.isCompleted == 1
+                ? Container()
+                : _bottomSheetButton(
+                    label: "Task Completed",
+                    onTap: () {
+                      Get.back();
+                    },
+                    clr: primaryClr,
+                  ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  _bottomSheetButton({
+    required String label,
+    required Function()? onTap,
+    required Color clr,
+    bool isClosed = false,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 4),
       ),
     );
   }
