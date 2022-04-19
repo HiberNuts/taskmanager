@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'package:date_picker_timeline/date_picker_widget.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -63,6 +65,14 @@ class _HomePageState extends State<HomePage> {
             itemBuilder: (_, index) {
               Task task = _taskController.taskList[index];
               if (task.repeat == "Daily") {
+                DateTime date =
+                    DateFormat.jm().parse(task.startTime.toString());
+
+                var myTime = DateFormat("HH:mm").format(date);
+                notifyHelper.scheduledNotification(
+                    int.parse(myTime.toString().split(":")[0]),
+                    int.parse(myTime.toString().split(":")[1]),
+                    task);
                 return AnimationConfiguration.staggeredList(
                   position: index,
                   child: SlideAnimation(
@@ -83,10 +93,10 @@ class _HomePageState extends State<HomePage> {
                 );
               }
 
-              //for weekly
-              if (task.repeat == "Weekly") {
-               
-              }
+              // //for weekly
+              // if (task.repeat == "Weekly") {
+
+              // }
 
               if (task.date == DateFormat.yMd().format(_selectedDate)) {
                 return AnimationConfiguration.staggeredList(
@@ -300,7 +310,7 @@ class _HomePageState extends State<HomePage> {
             body:
                 Get.isDarkMode ? "Activated Light Mode" : "Activated Dark Mode",
           );
-          notifyHelper.scheduledNotification();
+          // notifyHelper.scheduledNotification();
         },
         child: Icon(
           Get.isDarkMode ? Icons.wb_sunny_outlined : Icons.nightlight_round,
