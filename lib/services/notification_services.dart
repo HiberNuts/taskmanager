@@ -16,7 +16,8 @@ class NotifyHelper {
       FlutterLocalNotificationsPlugin(); //
 
   initializeNotification() async {
-    _configureLocalTimeZone();
+    tz.initializeTimeZones();
+    // _configureLocalTimeZone();
 
     final IOSInitializationSettings initializationSettingsIOS =
         IOSInitializationSettings(
@@ -111,13 +112,13 @@ class NotifyHelper {
         0,
         'scheduled title',
         'theme changes 5 seconds ago',
-        _converTime(hour, minutes),
-        // tz.TZDateTime.now(tz.local).add(
-        //   Duration(seconds: minutes),
-        // ),
+        // _converTime(hour, minutes),
+        tz.TZDateTime.now(tz.local)
+            .add(Duration(days: 0, minutes: minutes, hours: hour)),
         const NotificationDetails(
-            android: AndroidNotificationDetails(
-                'your channel name', 'your channel description')),
+          android: AndroidNotificationDetails(
+              'your channel name', 'your channel description'),
+        ),
         androidAllowWhileIdle: true,
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime,
