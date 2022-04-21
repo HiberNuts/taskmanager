@@ -245,6 +245,7 @@ class _HomePageState extends State<HomePage> {
         ),
         dayTextStyle: GoogleFonts.lato(
           textStyle: const TextStyle(
+            
               fontSize: 16, fontWeight: FontWeight.w800, color: Colors.grey),
         ),
         monthTextStyle: GoogleFonts.lato(
