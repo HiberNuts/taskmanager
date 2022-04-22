@@ -1,16 +1,16 @@
-# taskmanager
+# Task Manager
 
-A new Flutter project.
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
+## A Full stack task managing app
 
-A few resources to get you started if this is your first Flutter project:
+This project is created using flutter and GETX, SQLLite
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+You can assign tasks based on date and the data is stored mobile storage
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Also supports dark mode😎
+
+![image](https://user-images.githubusercontent.com/75308493/164714579-f94d2516-2325-4d2f-9248-69a353662453.png)
+
+![image](https://user-images.githubusercontent.com/75308493/164714606-ac27f48e-71d2-445f-8f0e-649a7046ec0c.png)
+
