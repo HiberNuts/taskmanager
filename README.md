@@ -4,7 +4,8 @@
 
 ## A Full stack task managing app
 
-This project is created using flutter and GETX, SQLLite
+This project is created using **flutter**
+#### packages: GETX, SQLLite, local notification.
 
 You can assign tasks based on date and the data is stored mobile storage
 
